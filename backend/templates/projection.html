@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Investment Projection - Finance Forge{% endblock %}
+{% block content %}
+<h1>Savings &amp; Investment Projection</h1>
+<div class="card">
+    <form method="post" action="{{ url_for('projection') }}">
+        <label>Initial Investment ({{ CURRENCY_SYMBOLS.get('GBP') }})
+            <input type="number" name="initial" step="0.01" min="0" value="{{ result['initial'] if result else '0' }}">
+        </label>
+        <label>Monthly Contribution ({{ CURRENCY_SYMBOLS.get('GBP') }})
+            <input type="number" name="monthly" step="0.01" min="0" value="{{ result['monthly'] if result else '100' }}">
+        </label>
+        <label>Annual Interest Rate (%)
+            <input type="number" name="annual_rate" step="0.1" min="0" value="{{ result['rate'] if result else '5' }}">
+        </label>
+        <label>Years
+            <input type="number" name="years" step="1" min="1" max="50" value="{{ result['years'] if result else '10' }}">
+        </label>
+        <button type="submit" class="btn-primary">Project Growth</button>
+    </form>
+</div>
+
+{% if result %}
+<div class="card result">
+    <h2>Projected Value: {{ CURRENCY_SYMBOLS.get('GBP') }}{{ '%.2f'|format(result['projected']) }}</h2>
+    <p>Total amount you would invest: {{ CURRENCY_SYMBOLS.get('GBP') }}{{ '%.2f'|format(result['contributed']) }}</p>
+    <p>{{ CURRENCY_SYMBOLS.get('GBP') }}{{ '%.2f'|format(result['projected'] - result['contributed']) }} in growth over {{ result['years'] }} years.</p>
+</div>
+
+{% if chart %}
+<canvas id="chart" width="700" height="300"></canvas>
+<script>
+    var labels = {{ chart['labels']|tojson }};
+    var data = {{ chart['data']|tojson }};
+    var canvas = document.getElementById('chart');
+    var ctx = canvas.getContext('2d');
+    var max = Math.max.apply(null, data);
+    var w = canvas.width, h = canvas.height;
+    var pad = 40;
+    ctx.clearRect(0, 0, w, h);
+    // axes
+    ctx.strokeStyle = '#ccc';
+    ctx.beginPath();
+    ctx.moveTo(pad, pad); ctx.lineTo(pad, h - pad); ctx.lineTo(w - pad, h - pad);
+    ctx.stroke();
+    // bars
+    var n = data.length;
+    var bw = (w - pad * 2) / n;
+    for (var i = 0; i < n; i++) {
+        var val = data[i];
+        var bh = ((h - pad * 2)) * (val / max);
+        var x = pad + i * bw;
+        var y = h - pad - bh;
+        ctx.fillStyle = '#2a7de1';
+        ctx.fillRect(x + 4, y, bw - 8, bh);
+        // x label
+        ctx.fillStyle = '#333';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(labels[i], x + bw / 2, h - pad + 14);
+    }
+</script>
+<p class="muted chart-title">Yearly projected growth</p>
+{% endif %}
+{% endif %}
+{% endblock %}

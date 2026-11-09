@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Client Records - Finance Forge{% endblock %}
+{% block content %}
+<h1>Client Records</h1>
+<a class="btn" href="{{ url_for('add_client') }}">+ Add Client</a>
+<table>
+    <tr><th>Name</th><th>Email</th><th>Phone</th><th>Notes</th><th>Date Added</th></tr>
+    {% if clients %}
+        {% for c in clients %}
+        <tr>
+            <td>{{ c['name'] }}</td>
+            <td>{{ c['email'] }}</td>
+            <td>{{ c['phone'] }}</td>
+            <td>{{ c['notes'] }}</td>
+            <td>{{ c['created_at'] }}</td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr><td colspan="5" class="muted">No client records yet.</td></tr>
+    {% endif %}
+</table>
+{% endblock %}

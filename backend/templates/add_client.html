@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Add Client - Finance Forge{% endblock %}
+{% block content %}
+<h1>Add Client</h1>
+<div class="card">
+    <form method="post" action="{{ url_for('add_client') }}">
+        <label>Full Name *
+            <input type="text" name="name" required>
+        </label>
+        <label>Email
+            <input type="email" name="email">
+        </label>
+        <label>Phone
+            <input type="text" name="phone">
+        </label>
+        <label>Notes
+            <textarea name="notes" rows="3"></textarea>
+        </label>
+        <button type="submit" class="btn-primary">Save Client</button>
+        <a class="btn" href="{{ url_for('clients') }}">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Currency Conversion - Finance Forge{% endblock %}
+{% block content %}
+<h1>Currency Conversion</h1>
+<p class="muted">Rates last updated: {{ updated }}</p>
+<div class="card">
+    <form method="post" action="{{ url_for('convert') }}">
+        <label>Amount
+            <input type="number" name="amount" step="0.01" min="0.01" required value="{{ result['amount'] if result else '' }}">
+        </label>
+        <div class="row">
+            <label>From
+                <select name="from_currency">
+                    {% for c in currencies %}
+                        <option value="{{ c }}" {{ 'selected' if result and result['from']==c else '' }}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>To
+                <select name="to_currency">
+                    {% for c in currencies %}
+                        <option value="{{ c }}" {{ 'selected' if result and result['to']==c else '' }}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        <button type="submit" class="btn-primary">Convert</button>
+    </form>
+</div>
+
+{% if result %}
+<div class="card result">
+    <h2>
+        {{ CURRENCY_SYMBOLS.get(result['from'],'') }}{{ '%.2f'|format(result['amount']) }} {{ result['from'] }}
+        = {{ CURRENCY_SYMBOLS.get(result['to'],'') }}{{ '%.2f'|format(result['converted']) }} {{ result['to'] }}
+    </h2>
+    <p class="muted">Exchange rate: 1 {{ result['from'] }} = {{ result['rate'] }} {{ result['to'] }}</p>
+</div>
+{% endif %}
+{% endblock %}

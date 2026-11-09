@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Finance Forge{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="topnav">
+        <a class="brand" href="{{ url_for('dashboard') }}">Finance Forge</a>
+        {% if session.get('user_id') %}
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('convert') }}">Currency Conversion</a>
+            <a href="{{ url_for('projection') }}">Investment Projection</a>
+            {% if session.get('role') in ['admin','staff'] %}
+                <a href="{{ url_for('clients') }}">Clients</a>
+            {% endif %}
+            <a href="{{ url_for('reports') }}">Reports</a>
+            <span class="right">
+                {{ session.get('full_name') }} ({{ session.get('role') }})
+                <a class="btn" href="{{ url_for('logout') }}">Logout</a>
+            </span>
+        {% endif %}
+    </nav>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

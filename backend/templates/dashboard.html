@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Finance Forge{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="grid">
+    <div class="card">
+        <h3>Currency Conversion</h3>
+        <p>Convert between {{ CURRENCY_SYMBOLS|length }} supported currencies at live exchange rates.</p>
+        <a class="btn" href="{{ url_for('convert') }}">Go to Converter</a>
+    </div>
+    <div class="card">
+        <h3>Investment Projection</h3>
+        <p>Project savings and investment growth with compounding interest and monthly contributions.</p>
+        <a class="btn" href="{{ url_for('projection') }}">Run Projection</a>
+    </div>
+    {% if role in ['admin','staff'] %}
+    <div class="card">
+        <h3>Client Records</h3>
+        <p>Store, retrieve and update secure client financial records.</p>
+        <a class="btn" href="{{ url_for('clients') }}">Manage Clients</a>
+    </div>
+    {% endif %}
+    <div class="card">
+        <h3>Reports</h3>
+        <p>View transaction history and audit trail for compliance.</p>
+        <a class="btn" href="{{ url_for('reports') }}">View Reports</a>
+    </div>
+</div>
+
+<h2>Recent Transactions</h2>
+<table>
+    <tr><th>Amount</th><th>From</th><th>To</th><th>Rate</th><th>Converted</th><th>Date</th></tr>
+    {% if recent %}
+        {% for t in recent %}
+        <tr>
+            <td>{{ CURRENCY_SYMBOLS.get(t['from_currency'],'') }}{{ '%.2f'|format(t['amount']) }}</td>
+            <td>{{ t['from_currency'] }}</td>
+            <td>{{ t['to_currency'] }}</td>
+            <td>{{ t['rate'] }}</td>
+            <td>{{ CURRENCY_SYMBOLS.get(t['to_currency'],'') }}{{ '%.2f'|format(t['converted_amount']) }}</td>
+            <td>{{ t['created_at'] }}</td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr><td colspan="6" class="muted">No transactions yet. Use the Currency Converter to get started.</td></tr>
+    {% endif %}
+</table>
+{% endblock %}

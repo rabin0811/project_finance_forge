@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Login - Finance Forge{% endblock %}
+{% block content %}
+<div class="card center login-card">
+    <h1>Finance Forge</h1>
+    <p>Sign in to access your financial tools.</p>
+    <form method="post" action="{{ url_for('login') }}">
+        <label>Username
+            <input type="text" name="username" required autofocus>
+        </label>
+        <label>Password
+            <input type="password" name="password" required>
+        </label>
+        <button type="submit" class="btn-primary">Login</button>
+    </form>
+    <p class="hint">Demo accounts: <b>admin/admin123</b> &middot; <b>staff/staff123</b> &middot; <b>client/client123</b></p>
+</div>
+{% endblock %}
